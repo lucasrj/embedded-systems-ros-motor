@@ -17,14 +17,17 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(dynamixel_sdk REQUIRED)
+find_package(dynamixel_sdk_custom_interfaces REQUIRED)
+find_package(rclcpp REQUIRED)
+
 
 add_executable(servo_controll src/servo_controll.cpp)
-target_include_directories(servo_controll PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(servo_controll
+  dynamixel_sdk_custom_interfaces
+  dynamixel_sdk
+  rclcpp
+)
 
 install(TARGETS servo_controll
   DESTINATION lib/${PROJECT_NAME})
