@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 
 """# 1. Load image"""
-image_1 = cv2.imread('nut.png')
-down_width = 1500
-down_height = 1000
+image_1 = cv2.imread('num_710.png')
+down_width = 640
+down_height = 480
 down_points = (down_width, down_height)
 image_1 = cv2.resize(image_1, down_points, interpolation= cv2.INTER_LINEAR)
 image = image_1.copy()
@@ -13,8 +13,8 @@ image = image_1.copy()
 
 """# 2. Detect nut"""
 
-lower_bound = np.array([40, 60, 0])
-upper_bound = np.array([180, 255, 255])
+lower_bound = np.array([15, 0, 0])
+upper_bound = np.array([255, 100, 255])
 image_1_HSV = cv2.cvtColor(image_1, cv2.COLOR_BGR2HSV)
 image_1_masked = cv2.inRange(image_1_HSV, lower_bound, upper_bound)
 # cv2.imshow("image_1_masked", image_1_masked)
@@ -22,7 +22,8 @@ image_1_masked = cv2.inRange(image_1_HSV, lower_bound, upper_bound)
 # cv2.destroyAllWindows()
 
 image_1_dil = cv2.dilate(image_1_masked, np.ones((15, 15), np.uint8))
-# image_1_ero = cv2.erode(image_1_dil, np.ones((8, 8), np.uint8))
+image_1_ero = cv2.erode(image_1_dil, np.ones((10, 10), np.uint8))
+image_1 = cv2.bitwise_not(image_1_ero)
 
 # cv2.imshow("image_1_dil", image_1_dil)
 # cv2.waitKey()
@@ -30,9 +31,15 @@ image_1_dil = cv2.dilate(image_1_masked, np.ones((15, 15), np.uint8))
 # cv2.imshow("image_1_ero", image_1_ero)
 # cv2.waitKey()
 # cv2.destroyAllWindows()
+# cv2.imshow("image_1", image_1)
+# cv2.waitKey()
+# cv2.destroyAllWindows()
 
-conts, hierarchy = cv2.findContours(image_1_dil, cv2.RETR_LIST ,cv2.CHAIN_APPROX_SIMPLE)
-cv2.drawContours(image_1, conts, -1, (255, 0, 0), 2)
+conts, hierarchy = cv2.findContours(image_1, cv2.RETR_EXTERNAL ,cv2.CHAIN_APPROX_SIMPLE)
+cv2.drawContours(image_1, conts, -1, (8, 81, 100), 2)
+cv2.imshow("image_1_contours", image_1)
+cv2.waitKey()
+cv2.destroyAllWindows()
 
 centers = []
 for cont in conts:
@@ -42,9 +49,12 @@ for cont in conts:
     centers.append((x0, y0))
 
 for center in centers:
-    cv2.circle(image, center, 3, (255, 0, 0), 3)
+    cv2.circle(image, center, 3, (5, 92, 94), 3)
+    # Draw line where vertex should be
+    a = 5 * np.tan(18.5)
+    cv2.line(image, center, (int(a), 5), (5, 92, 94), 1)
 
-# Fin the furthest point of the contour (from its center of mass)
+# Find the furthest point of the contour (from its center of mass)
 max_dist = 0
 max_point = None
 
@@ -58,7 +68,6 @@ for cont in conts:
 cv2.circle(image, max_point, 2, (255, 0, 0), 3)
 print('center: ' + str(center))
 print('max_point: ' + str(max_point))
-
 
 
 # Calculating the tool angle
