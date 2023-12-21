@@ -51,8 +51,9 @@ for cont in conts:
 for center in centers:
     cv2.circle(image, center, 3, (5, 92, 94), 3)
     # Draw line where vertex should be
-    a = 5 * np.tan(18.5)
-    cv2.line(image, center, (int(a), 5), (5, 92, 94), 1)
+    a = 100 * np.tan(np.radians(18.5))
+    print(a)
+    cv2.line(image, center, (center[0]-int(a), center[1]-100), (5, 92, 94), 1)
 
 # Find the furthest point of the contour (from its center of mass)
 max_dist = 0
@@ -71,19 +72,26 @@ print('max_point: ' + str(max_point))
 
 
 # Calculating the tool angle
-offset_angle_of_camera = 20
+offset_angle_of_camera = 18.5
 tool_angle = 0
-
-
-if (max_point[0]>center[0] and max_point[1]<center[1]) or (max_point[0]<center[0] and max_point[1]>center[1]):
-    tool_angle = -(90 - np.degrees(np.arcsin((center[1] - max_point[1])/(max_dist))) + 18.5)
-elif (max_point[0]<center[0] and max_point[1]<center[1]) or (max_point[0]>center[0] and max_point[1]>center[1]):
-    tool_angle = 90 - np.degrees(np.arcsin((center[1] - max_point[1])/(max_dist))) - 18.5
+    
+if (center[0]<max_point[0] and center[1]>max_point[1]):
+    print('I')
+    tool_angle = -np.degrees(np.arctan((max_point[0]-center[0])/(center[1]-max_point[1]))) - offset_angle_of_camera
+elif (center[0]<max_point[0] and center[1]<max_point[1]):
+    print('IV')
+    tool_angle = 90 - offset_angle_of_camera - np.degrees(np.arctan((max_point[1]-center[1])/(max_point[0]-center[0])))
+elif (center[0]>max_point[0] and center[1]<max_point[1]):
+    print('III')
+    tool_angle = -np.degrees(np.arctan((center[0]-max_point[0])/(max_point[1]-center[1]))) - offset_angle_of_camera
+elif (center[0]>max_point[0] and center[1]>max_point[1]):
+    print('II')
+    tool_angle = 90 - offset_angle_of_camera - np.degrees(np.arctan((center[1]-max_point[1])/(center[0]-max_point[0])))
 elif point[0]==center[0]:
     tool_angle = -18.5
 elif point[1]==center[1]:
     tool_angle = 90-18.5
-
+    
 print('tool angle: ' + str(tool_angle))
 # Display
 cv2.imshow("image", image)
