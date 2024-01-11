@@ -21,6 +21,16 @@ find_package(dynamixel_sdk REQUIRED)
 find_package(dynamixel_sdk_custom_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 
+include_directories(${CMAKE_SOURCE_DIR}/include/${PROJECT_NAME})
+
+add_library(nn_inference_driver STATIC src/nn_inference_driver/xnn_inference_linux.c src/nn_inference_driver/xnn_inference.c)
+
+add_library(axi_dma STATIC src/axi_dma/axidma.cpp)
+
+# # Specify the library output name and location
+# set_target_properties(example_driver PROPERTIES OUTPUT_NAME example_driver)
+# set_target_properties(example_driver PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+
 
 add_executable(servo_controll src/servo_controll.cpp)
 ament_target_dependencies(servo_controll
