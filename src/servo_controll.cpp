@@ -64,7 +64,7 @@ public:
     float scale =  0.29297;
 
 
-    dxl_comm_result_ = packetHandler_->write4ByteTxRx(
+    dxl_comm_result_ = packetHandler_->write2ByteTxRx(
         portHandler_, (uint8_t)tool_motor_id_, ADDR_GOAL_POSITION_, (int)(msg->data/scale),
         &dxl_error_);
 
@@ -101,7 +101,7 @@ public:
     }
 
         // Enable set speed of arm
-    dxl_comm_result_ = packetHandler_->write4ByteTxRx(
+    dxl_comm_result_ = packetHandler_->write2ByteTxRx(
         portHandler_, (uint8_t)arm_motor_id_, ADDR_speed_, 10, &dxl_error_);
 
     if (dxl_comm_result_ != COMM_SUCCESS) {
@@ -109,7 +109,7 @@ public:
                    "Failed to set speed.");
     }
 
-    dxl_comm_result_ = packetHandler_->write4ByteTxRx(
+    dxl_comm_result_ = packetHandler_->write2ByteTxRx(
         portHandler_, (uint8_t)arm_motor_id_, ADDR_GOAL_POSITION_, (int)(msg->data/scale),
         &dxl_error_);
 
