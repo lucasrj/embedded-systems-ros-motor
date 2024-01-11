@@ -2,16 +2,16 @@ from pickle import FALSE, TRUE
 import cv2
 import numpy as np
 
-"""# Load image"""
+"""# 1. Load image"""
 image_1 = cv2.imread('num_710.png')
-# down_width = 640
-# down_height = 480
-# down_points = (down_width, down_height)
-# image_1 = cv2.resize(image_1, down_points, interpolation= cv2.INTER_LINEAR)
+down_width = 640
+down_height = 480
+down_points = (down_width, down_height)
+image_1 = cv2.resize(image_1, down_points, interpolation= cv2.INTER_LINEAR)
 image = image_1.copy()
 
 
-"""# Detect nut"""
+"""# 2. Detect nut"""
 lower_bound = np.array([15, 0, 0])
 upper_bound = np.array([255, 100, 255])
 image_1_HSV = cv2.cvtColor(image_1, cv2.COLOR_BGR2HSV)
@@ -51,6 +51,7 @@ for center in centers:
     cv2.circle(image, center, 3, (5, 92, 94), 3)
     # Draw line where vertex should be
     a = 100 * np.tan(np.radians(18.5))
+    print(a)
     cv2.line(image, center, (center[0]-int(a), center[1]-100), (5, 92, 94), 1)
 
 # Find the furthest point of the contour (from its center of mass)
@@ -69,7 +70,7 @@ print('center: ' + str(center))
 print('max_point: ' + str(max_point))
 
 
-"""# Calculating the tool angle"""
+# Calculating the tool angle
 offset_angle_of_camera = 18.5
 tool_angle = 0
     
