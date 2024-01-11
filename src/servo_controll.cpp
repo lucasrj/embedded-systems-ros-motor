@@ -60,8 +60,12 @@ public:
   }
 
   bool tool_motor_callback(std_msgs::msg::Int16::ConstSharedPtr msg) {
+
+    float scale =  0.29297;
+
+
     dxl_comm_result_ = packetHandler_->write4ByteTxRx(
-        portHandler_, (uint8_t)tool_motor_id_, ADDR_GOAL_POSITION_, msg->data,
+        portHandler_, (uint8_t)tool_motor_id_, ADDR_GOAL_POSITION_, (int)(msg->data/scale),
         &dxl_error_);
 
     if (dxl_comm_result_ != COMM_SUCCESS) {
@@ -87,13 +91,17 @@ public:
     //   RCLCPP_INFO(this->get_logger(), "%s",
     //               packetHandler_->getRxPacketError(dxl_error_));
     // }
+
+    float scale =  0.29297;
+
+    
     if(msg->data < 70 || msg->data > 200){
       RCLCPP_INFO(this->get_logger(), "requested pose in out of bounds");
       return false;
     }
 
     dxl_comm_result_ = packetHandler_->write4ByteTxRx(
-        portHandler_, (uint8_t)arm_motor_id_, ADDR_GOAL_POSITION_, msg->data,
+        portHandler_, (uint8_t)arm_motor_id_, ADDR_GOAL_POSITION_, (int)(msg->data/scale),
         &dxl_error_);
 
     if (dxl_comm_result_ != COMM_SUCCESS) {
