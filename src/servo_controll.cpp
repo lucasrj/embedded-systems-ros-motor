@@ -86,6 +86,10 @@ public:
     //   RCLCPP_INFO(this->get_logger(), "%s",
     //               packetHandler_->getRxPacketError(dxl_error_));
     // }
+    if(msg->data < 70 || msg->data > 200){
+      RCLCPP_INFO(this->get_logger(), "requested pose in out of bounds");
+      return false;
+    }
 
     dxl_comm_result_ = packetHandler_->write4ByteTxRx(
         portHandler_, (uint8_t)arm_motor_id_, ADDR_GOAL_POSITION_, msg->data,
@@ -101,6 +105,7 @@ public:
       RCLCPP_INFO(this->get_logger(), "Set [ID: %d] [Goal Position: %d]",
                   tool_motor_id_, msg->data);
     }
+    return true;
   };
 
   void setupDynamixel(uint8_t dxl_id) {
