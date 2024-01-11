@@ -55,7 +55,8 @@ public:
                   "Succeeded to set the baudrate.");
     }
 
-    setupDynamixel(BROADCAST_ID);
+    setupDynamixel(tool_motor_id_,0);
+    setupDynamixel(arm_motor_id_,10);
   }
 
   bool tool_motor_callback(std_msgs::msg::Int16::ConstSharedPtr msg) {
@@ -108,7 +109,7 @@ public:
     return true;
   };
 
-  void setupDynamixel(uint8_t dxl_id) {
+  void setupDynamixel(uint8_t dxl_id,uint8_t speed) {
     // Use Position Control Mode
     dxl_comm_result_ = packetHandler_->write1ByteTxRx(
         portHandler_, dxl_id, ADDR_OPERATING_MODE_, 3, &dxl_error_);
@@ -123,6 +124,17 @@ public:
     // Enable Torque of DYNAMIXEL
     dxl_comm_result_ = packetHandler_->write1ByteTxRx(
         portHandler_, dxl_id, ADDR_TORQUE_ENABLE_, 1, &dxl_error_);
+
+    if (dxl_comm_result_ != COMM_SUCCESS) {
+      RCLCPP_ERROR(rclcpp::get_logger("read_write_node"),
+                   "Failed to enable torque.");
+    } else {
+      RCLCPP_INFO(rclcpp::get_logger("read_write_node"),
+                  "Succeeded to enable torque.");
+    }
+    // Enable set speed of arm
+    dxl_comm_result_ = packetHandler_->write1ByteTxRx(
+        portHandler_, dxl_id, ADDR_speed_, speed, &dxl_error_);
 
     if (dxl_comm_result_ != COMM_SUCCESS) {
       RCLCPP_ERROR(rclcpp::get_logger("read_write_node"),
