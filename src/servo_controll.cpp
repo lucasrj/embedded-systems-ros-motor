@@ -102,7 +102,7 @@ public:
 
         // Enable set speed of arm
     dxl_comm_result_ = packetHandler_->write4ByteTxRx(
-        portHandler_, arm_motor_id_, ADDR_speed_, 10, &dxl_error_);
+        portHandler_, (uint8_t)arm_motor_id_, ADDR_speed_, 10, &dxl_error_);
 
     if (dxl_comm_result_ != COMM_SUCCESS) {
       RCLCPP_ERROR(rclcpp::get_logger("read_write_node"),
