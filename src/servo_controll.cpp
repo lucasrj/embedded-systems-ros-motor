@@ -141,15 +141,15 @@ public:
                   "Succeeded to enable torque.");
     }
     // Enable set speed of arm
-    dxl_comm_result_ = packetHandler_->write1ByteTxRx(
+    dxl_comm_result_ = packetHandler_->write4ByteTxRx(
         portHandler_, dxl_id, ADDR_speed_, speed, &dxl_error_);
 
     if (dxl_comm_result_ != COMM_SUCCESS) {
       RCLCPP_ERROR(rclcpp::get_logger("read_write_node"),
-                   "Failed to enable torque.");
+                   "Failed to set speed.");
     } else {
       RCLCPP_INFO(rclcpp::get_logger("read_write_node"),
-                  "Succeeded to enable torque.");
+                  "Succeeded to set speed to %i" ,speed);
     }
   }
 
