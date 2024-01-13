@@ -20,8 +20,10 @@ find_package(ament_cmake REQUIRED)
 find_package(dynamixel_sdk REQUIRED)
 find_package(dynamixel_sdk_custom_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package( OpenCV REQUIRED )
+find_package(cv_bridge REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/include/${PROJECT_NAME})
+include_directories(${CMAKE_SOURCE_DIR}/include/${PROJECT_NAME} ${OpenCV_INCLUDE_DIRS})
 
 add_library(nn_inference_driver STATIC src/nn_inference_driver/xnn_inference_linux.c src/nn_inference_driver/xnn_inference.c)
 
@@ -37,6 +39,13 @@ ament_target_dependencies(servo_controll
   dynamixel_sdk_custom_interfaces
   dynamixel_sdk
   rclcpp
+)
+
+add_executable(ai_node src/ai_node.cpp)
+target_link_libraries(ai_node nn_inference_driver axi_dma ${OpenCV_LIBS})
+ament_target_dependencies(ai_node
+  rclcpp
+  cv_bridge
 )
 
 install(TARGETS servo_controll

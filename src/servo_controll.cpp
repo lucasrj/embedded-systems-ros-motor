@@ -1,5 +1,3 @@
-#include "dynamixel_sdk/dynamixel_sdk.h"
-#include <cstdio>
 #include <dynamixel_sdk/packet_handler.h>
 #include <memory>
 #include <rclcpp/node.hpp>
